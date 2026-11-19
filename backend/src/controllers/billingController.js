@@ -2,6 +2,7 @@ import { z } from "zod";
 import * as billingService from "../services/billingService.js";
 import * as billingModel from "../models/billingModel.js";
 import * as reconciliationService from "../services/reconciliationService.js";
+import * as upiGatewayService from "../services/upiGatewayService.js";
 import { success, created, fail } from "../utils/apiResponse.js";
 
 export const generateBillsSchema = z.object({
@@ -25,6 +26,10 @@ export const batchReconcileSchema = z.object({
       })
     )
     .min(1, "At least one item must be selected for reconciliation"),
+});
+
+export const createPaymentSessionSchema = z.object({
+  billId: z.number().int().positive(),
 });
 
 export async function generateBills(req, res) {
@@ -100,4 +105,30 @@ export async function batchReconcileBankStatement(req, res) {
     verifiedBy: req.user.id,
   });
   return success(res, result, `Successfully auto-reconciled ${result.reconciledCount} payments`);
+}
+
+export async function createPaymentSession(req, res) {
+  const societyId = req.societyId || 1;
+  const session = await upiGatewayService.createPaymentSession({
+    billId: req.body.billId,
+    societyId,
+    user: req.user,
+  });
+  return created(res, session, "UPI dynamic payment session created");
+}
+
+export async function getSessionStatus(req, res) {
+  const societyId = req.societyId || null;
+  const status = await upiGatewayService.getSessionStatus(req.params.referenceId, societyId);
+  return success(res, status);
+}
+
+export async function processGatewayWebhook(req, res) {
+  const signature = req.headers["x-webhook-signature"] || req.headers["x-verify"] || null;
+  const result = await upiGatewayService.processGatewayWebhook({
+    payload: req.body,
+    signature,
+    rawBody: JSON.stringify(req.body),
+  });
+  return success(res, result, "Gateway payment processed and reconciled");
 }

@@ -52,3 +52,13 @@ export async function batchReconcileBankStatement(items) {
   const { data } = await apiClient.post("/billing/reconcile/bank-statement/commit", { items });
   return data.data;
 }
+
+export async function createUpiPaymentSession(billId) {
+  const { data } = await apiClient.post("/billing/upi/create-session", { billId: Number(billId) });
+  return data.data;
+}
+
+export async function getUpiSessionStatus(referenceId) {
+  const { data } = await apiClient.get(`/billing/upi/session/${referenceId}`);
+  return data.data;
+}

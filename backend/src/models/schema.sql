@@ -278,3 +278,24 @@ CREATE TABLE IF NOT EXISTS helpdesk_ticket_comments (
   FOREIGN KEY (ticket_id) REFERENCES helpdesk_tickets(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS upi_payment_sessions (
+  id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+  society_id      BIGINT NOT NULL,
+  bill_id         BIGINT NOT NULL,
+  reference_id    VARCHAR(100) NOT NULL UNIQUE,
+  amount          DECIMAL(12, 2) NOT NULL,
+  status          ENUM('PENDING', 'SUCCESS', 'EXPIRED', 'FAILED') DEFAULT 'PENDING',
+  vpa             VARCHAR(100) NOT NULL,
+  utr             VARCHAR(30) NULL,
+  payer_vpa       VARCHAR(100) NULL,
+  gateway_provider VARCHAR(50) DEFAULT 'SOVEREIGN_UPI',
+  expires_at      TIMESTAMP NOT NULL,
+  paid_at         TIMESTAMP NULL,
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
+  FOREIGN KEY (bill_id) REFERENCES maintenance_bills(id) ON DELETE CASCADE,
+  INDEX idx_session_ref (reference_id),
+  INDEX idx_session_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

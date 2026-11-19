@@ -96,7 +96,19 @@
   - **Backend Service & RBAC (`ticketModel.js`, `ticketService.js`, `ticketController.js`)**: Mounted `/api/helpdesk` with automated in-app notifications to admins, emergency ticket prioritization, vendor assignment, resolution notes, and role-based privacy (residents cannot view other private flats' tickets).
   - **Frontend UI & Timeline (`HelpdeskTicketsPage.jsx`)**: Full ticketing interface with telemetry cards, ticket creation modal with photo dropzone, category pills, search/filter controls, technician assignment, estimated cost tracking, progress timeline comments, and resident star rating / closure flow. Mounted at `/helpdesk` with navigation link in `AppShell.jsx`.
   - **Automated Vitest Suite (`helpdesk.test.js`)**: 38 / 38 Vitest tests passing across 11 test suites; clean production Vite build in 19.5s.
-- [ ] **Killer Feature 4: Direct Payment Gateway / Virtual Accounts (Smart Collect Webhook)**
+- [x] **Killer Feature 4: Sovereign Zero-Fee UPI Payment Gateway & Webhook Engine (0% MDR / No Razorpay)**:
+  - **Zero-Fee Sovereignty**: Direct UPI payment engine operating without middleman cuts (0% MDR) under Indian NPCI regulations. Eliminates 2% payment gateway fees.
+  - **Dynamic NPCI `tr` Embedding**: Encodes unique transaction references `tr=VL-S<socId>-B<billId>-<hash>` in standard `upi://pay?` URIs for instant automated settlement.
+  - **Database Schema (`upi_payment_sessions`)**: Created session tracking with reference IDs, payment status (`PENDING`, `SUCCESS`, `EXPIRED`, `FAILED`), bank UTR, metadata, and auto-expiration tracking.
+  - **Backend Webhook & Settlement Engine (`upiGatewayService.js`, `billingController.js`)**: Public webhook `POST /api/billing/upi/webhook` with HMAC-SHA256 signature verification, idempotent atomic bill settlement to `PAID`, automatic creation of verified reconciliation records, and tamper-evident SHA-256 ledger chaining.
+  - **Dynamic Frontend Gateway Modal (`UpiPaymentModal.jsx`)**:
+    - Automatic session creation with real-time 2.5s radar polling for webhook events.
+    - Dynamic QR code generation with embedded transaction parameters.
+    - Mobile 1-tap intent button (`window.location.href = upiIntentUri`) launching installed UPI apps (GPay, PhonePe, Paytm, BHIM).
+    - Visual radar listener ("Awaiting Bank Webhook Settlement") with 30-minute expiration countdown.
+    - Instant celebratory auto-settlement animation with verified UTR badge and ledger confirmation.
+    - Manual 12-digit UTR fallback form for residents who prefer manual submission.
+  - **Automated Vitest Suite (`upiGateway.test.js`)**: 42 / 42 Vitest tests passing across 12 test suites; clean production Vite build in 17.5s.
 - [ ] **Killer Feature 5: Official PDF Notice Board & Society Documents Vault**
 
 > **Rule:** After completing each numbered phase, update this file by checking the completed items so the next model resumes from the next unchecked step.

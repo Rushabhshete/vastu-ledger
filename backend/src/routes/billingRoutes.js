@@ -9,6 +9,13 @@ import * as ctrl from "../controllers/billingController.js";
 
 const router = Router();
 
+// Public Webhook for Zero-Fee UPI Gateway / Bank Callbacks (PhonePe, Paytm, UPILerify, Bank Webhook)
+router.post(
+  "/upi/webhook",
+  auditLog("UPI_GATEWAY_WEBHOOK_PROCESSED"),
+  ctrl.processGatewayWebhook
+);
+
 router.use(authenticate);
 router.use(requireTenant);
 
@@ -31,6 +38,15 @@ router.post("/upi/verify/:id",
   auditLog("UPI_VERIFIED"),
   ctrl.verifyUtr
 );
+
+// Sovereign Zero-Fee UPI Payment Gateway Endpoints
+router.post(
+  "/upi/create-session",
+  validateRequest(ctrl.createPaymentSessionSchema),
+  ctrl.createPaymentSession
+);
+
+router.get("/upi/session/:referenceId", ctrl.getSessionStatus);
 
 // Bank Statement Auto-Reconciler Endpoints
 router.post(
