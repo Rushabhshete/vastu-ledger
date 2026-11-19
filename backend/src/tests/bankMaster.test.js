@@ -28,7 +28,7 @@ describe("Bank Master Security & Secret Account Masking / Key Rotation", () => {
       "UPDATE system_settings SET setting_value = 'ICICI ****4521' WHERE society_id = 1 AND setting_key = 'SOCIETY_BANK_MASK'"
     );
     await pool.execute(
-      "UPDATE system_settings SET setting_value = 'vastuheights@icici' WHERE society_id = 1 AND setting_key = 'SOCIETY_UPI_VPA'"
+      "UPDATE system_settings SET setting_value = '9923812557@upi' WHERE society_id = 1 AND setting_key = 'SOCIETY_UPI_VPA'"
     );
     await pool.execute("DELETE FROM notifications WHERE title LIKE '%Bank Master Rotated%'");
   });

@@ -51,7 +51,7 @@ export async function createPaymentSession({ billId, societyId = 1, user = null 
     "9923812557@upi";
   const society = (await societyModel.findById(societyId)) || { name: "Vastu Heights CHS" };
 
-  if (existing) {
+  if (existing && existing.vpa === vpaVal) {
     const intentUri = generateUpiIntentUri({
       vpa: existing.vpa,
       payeeName: society.name,

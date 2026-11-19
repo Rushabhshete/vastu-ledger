@@ -196,7 +196,7 @@ export default function WhatsAppBotPage() {
       ``,
       `⚡ *Instant 0% Fee UPI Payment:*`,
       `Tap below to open PhonePe / GPay / BHIM:`,
-      `upi://pay?pa=${upiVpa || "vastu.ledger@upi"}&pn=VastuHeights&am=5300&tr=VL-BILL-101`,
+      `upi://pay?pa=${upiVpa || "9923812557@upi"}&pn=VastuHeights&am=5300&tr=VL-BILL-101`,
       ``,
       `_Receipt and audit ledger hash will be instantly recorded upon bank settlement._`,
     ].join("\n"),
@@ -212,7 +212,7 @@ export default function WhatsAppBotPage() {
       `Please settle before the due date to avoid the 18% p.a. statutory late-fee interest.`,
       ``,
       `⚡ *Instant UPI Payment Link:*`,
-      `upi://pay?pa=${upiVpa || "vastu.ledger@upi"}&pn=VastuHeights&am=7590&tr=VL-REM-204`,
+      `upi://pay?pa=${upiVpa || "9923812557@upi"}&pn=VastuHeights&am=7590&tr=VL-REM-204`,
     ].join("\n"),
 
     RECEIPT_CONFIRMATION: [

@@ -65,7 +65,7 @@ INSERT INTO system_settings (society_id, setting_key, setting_value) VALUES
 (1, 'LATE_FEE_TYPE',                  'SIMPLE_PERCENT'),
 (1, 'LATE_FEE_RATE',                  '18'),
 (1, 'MAKER_CHECKER_THRESHOLD',        '15000'),
-(1, 'SOCIETY_UPI_VPA',                'vastuheights@icici'),
+(1, 'SOCIETY_UPI_VPA',                '9923812557@upi'),
 (1, 'SOCIETY_BANK_MASK',              'ICICI ****4521'),
 (1, 'SOCIETY_GSTIN',                  '27AABCV1234F1ZK'),
 (1, 'BILLING_CYCLE_DAY',              '1'),

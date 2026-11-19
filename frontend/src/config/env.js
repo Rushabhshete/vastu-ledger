@@ -6,7 +6,7 @@ export const ENV = {
     NAME: "Vastu Heights Co-operative Housing Society",
     REG_NO: "MAH/PUN/RWA/2026/411045",
     CITY: "Pune, Maharashtra",
-    UPI_VPA: "vastuheights@icici",
+    UPI_VPA: "9923812557@upi",
   },
   DEFAULT_FEATURES: {
     FEATURE_3D_TOWER_VIEW: true,
