@@ -12,6 +12,7 @@ import CommandCenterPage from "./pages/dashboard/CommandCenterPage.jsx";
 import MaintenanceBillsPage from "./pages/ledger/MaintenanceBillsPage.jsx";
 import ExpenseVaultPage from "./pages/ledger/ExpenseVaultPage.jsx";
 import AgmPollsPage from "./pages/governance/AgmPollsPage.jsx";
+import HelpdeskTicketsPage from "./pages/helpdesk/HelpdeskTicketsPage.jsx";
 import AdminControlPanelPage from "./pages/admin/AdminControlPanelPage.jsx";
 import PlatformSocietiesPage from "./pages/admin/PlatformSocietiesPage.jsx";
 
@@ -65,6 +66,17 @@ export function App() {
                   <ProtectedRoute>
                     <AppShell>
                       <AgmPollsPage />
+                    </AppShell>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/helpdesk"
+                element={
+                  <ProtectedRoute>
+                    <AppShell>
+                      <HelpdeskTicketsPage />
                     </AppShell>
                   </ProtectedRoute>
                 }

@@ -91,7 +91,11 @@
   - **Interactive Frontend Reconciler Modal (`BankReconcilerModal.jsx`)**: Built drag-and-drop statement dropzone, match telemetry cards, batch selection checkboxes, and 1-click **"Approve & Reconcile to Ledger"** action.
   - **Automated Vitest Suite (`bankReconciler.test.js`)**: All 33 Vitest tests passing across 10 test suites; clean production Vite build (`dist/` built in 30s).
 - [ ] **Killer Feature 2: WhatsApp Notification Bot (Cloud API Integration)**
-- [ ] **Killer Feature 3: Resident Helpdesk & Maintenance Ticketing**
+- [x] **Killer Feature 3: Resident Helpdesk & Maintenance Ticketing**:
+  - **Database Architecture (`helpdesk_tickets` & `helpdesk_ticket_comments`)**: Created relational schema for ticket tracking with category (`PLUMBING`, `ELECTRICAL`, `LIFT_ELEVATOR`, `SECURITY`, `CIVIL_LEAKAGE`, `HOUSEKEEPING`, `GENERAL`), priority (`LOW`, `MEDIUM`, `HIGH`, `EMERGENCY`), scope (`PRIVATE_FLAT`, `COMMON_AREA`), photo proof attachments, technician assignments, estimated costs, and 5-star ratings.
+  - **Backend Service & RBAC (`ticketModel.js`, `ticketService.js`, `ticketController.js`)**: Mounted `/api/helpdesk` with automated in-app notifications to admins, emergency ticket prioritization, vendor assignment, resolution notes, and role-based privacy (residents cannot view other private flats' tickets).
+  - **Frontend UI & Timeline (`HelpdeskTicketsPage.jsx`)**: Full ticketing interface with telemetry cards, ticket creation modal with photo dropzone, category pills, search/filter controls, technician assignment, estimated cost tracking, progress timeline comments, and resident star rating / closure flow. Mounted at `/helpdesk` with navigation link in `AppShell.jsx`.
+  - **Automated Vitest Suite (`helpdesk.test.js`)**: 38 / 38 Vitest tests passing across 11 test suites; clean production Vite build in 19.5s.
 - [ ] **Killer Feature 4: Direct Payment Gateway / Virtual Accounts (Smart Collect Webhook)**
 - [ ] **Killer Feature 5: Official PDF Notice Board & Society Documents Vault**
 

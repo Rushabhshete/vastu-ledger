@@ -7,6 +7,7 @@ import {
   Receipt,
   FileSpreadsheet,
   Vote,
+  Wrench,
   ShieldCheck,
   LogOut,
   Sun,
@@ -72,6 +73,12 @@ export function AppShell({ children }) {
       label: "AGM Governance & Polls",
       path: "/governance",
       icon: Vote,
+      roles: ["ADMIN", "TREASURER", "COMMITTEE", "RESIDENT"],
+    },
+    {
+      label: "Helpdesk & Maintenance",
+      path: "/helpdesk",
+      icon: Wrench,
       roles: ["ADMIN", "TREASURER", "COMMITTEE", "RESIDENT"],
     },
     {

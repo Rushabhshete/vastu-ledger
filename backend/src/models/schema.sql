@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   role            VARCHAR(50) NULL,
   title           VARCHAR(255) NOT NULL,
   detail          TEXT NOT NULL,
-  type            ENUM('UPI', 'EXPENSE', 'POLL', 'SYSTEM') NOT NULL DEFAULT 'SYSTEM',
+  type            ENUM('UPI', 'EXPENSE', 'POLL', 'SYSTEM', 'TICKET') NOT NULL DEFAULT 'SYSTEM',
   link            VARCHAR(255) NULL,
   is_read         BOOLEAN DEFAULT FALSE,
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -239,4 +239,42 @@ CREATE TABLE IF NOT EXISTS notifications (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   INDEX idx_notif_soc (society_id),
   INDEX idx_notif_user (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS helpdesk_tickets (
+  id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+  society_id      BIGINT NOT NULL,
+  flat_id         BIGINT NULL,
+  created_by      BIGINT NOT NULL,
+  title           VARCHAR(255) NOT NULL,
+  description     TEXT NOT NULL,
+  category        ENUM('PLUMBING', 'ELECTRICAL', 'LIFT_ELEVATOR', 'SECURITY', 'CIVIL_LEAKAGE', 'HOUSEKEEPING', 'GENERAL') NOT NULL DEFAULT 'GENERAL',
+  priority        ENUM('LOW', 'MEDIUM', 'HIGH', 'EMERGENCY') NOT NULL DEFAULT 'MEDIUM',
+  status          ENUM('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED') NOT NULL DEFAULT 'OPEN',
+  scope_type      ENUM('PRIVATE_FLAT', 'COMMON_AREA') NOT NULL DEFAULT 'PRIVATE_FLAT',
+  photo_url       VARCHAR(500) NULL,
+  assigned_to     VARCHAR(255) NULL,
+  estimated_cost  DECIMAL(12, 2) DEFAULT 0.00,
+  resolution_notes TEXT NULL,
+  resolved_at     TIMESTAMP NULL,
+  rating          INT NULL,
+  feedback        TEXT NULL,
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
+  FOREIGN KEY (flat_id) REFERENCES flats(id) ON DELETE SET NULL,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_ticket_soc_status (society_id, status),
+  INDEX idx_ticket_flat (flat_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS helpdesk_ticket_comments (
+  id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+  ticket_id   BIGINT NOT NULL,
+  user_id     BIGINT NOT NULL,
+  comment     TEXT NOT NULL,
+  is_internal BOOLEAN DEFAULT FALSE,
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ticket_id) REFERENCES helpdesk_tickets(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
