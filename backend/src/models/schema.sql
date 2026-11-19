@@ -326,3 +326,49 @@ CREATE TABLE IF NOT EXISTS whatsapp_logs (
   INDEX idx_wa_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS society_documents (
+  id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
+  society_id          BIGINT NOT NULL,
+  title               VARCHAR(255) NOT NULL,
+  category            ENUM('COMPLIANCE_NOC', 'SOCIETY_BYELAWS', 'AGM_MINUTES', 'FINANCIAL_AUDIT', 'SHARE_CERTIFICATE', 'CIRCULAR_NOTICE', 'GENERAL') NOT NULL DEFAULT 'GENERAL',
+  document_number     VARCHAR(100) NULL,
+  issuing_authority   VARCHAR(255) NULL,
+  file_path           VARCHAR(500) NOT NULL,
+  file_size_bytes     INT NULL,
+  file_type           VARCHAR(50) DEFAULT 'application/pdf',
+  access_scope        ENUM('ALL_RESIDENTS', 'COMMITTEE_ONLY', 'PUBLIC') DEFAULT 'ALL_RESIDENTS',
+  valid_from          DATE NULL,
+  expires_at          DATE NULL,
+  description         TEXT NULL,
+  uploaded_by         BIGINT NOT NULL,
+  created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
+  FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_doc_soc_cat (society_id, category),
+  INDEX idx_doc_expires (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS official_notices (
+  id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
+  society_id          BIGINT NOT NULL,
+  title               VARCHAR(255) NOT NULL,
+  notice_number       VARCHAR(100) NOT NULL,
+  category            ENUM('AGM_EGM', 'MAINTENANCE_WORK', 'RULES_REGULATIONS', 'ELECTION', 'EVENT_CELEBRATION', 'GENERAL') DEFAULT 'GENERAL',
+  priority            ENUM('LOW', 'MEDIUM', 'HIGH', 'EMERGENCY') DEFAULT 'MEDIUM',
+  content             TEXT NOT NULL,
+  attachment_path     VARCHAR(500) NULL,
+  issued_by           VARCHAR(255) NOT NULL DEFAULT 'Managing Committee',
+  published_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at          TIMESTAMP NULL,
+  is_pinned           BOOLEAN DEFAULT FALSE,
+  created_by          BIGINT NOT NULL,
+  created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_notice_soc (society_id, is_pinned),
+  INDEX idx_notice_pub (published_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+

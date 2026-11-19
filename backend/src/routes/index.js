@@ -8,6 +8,7 @@ import societyRoutes from "./societyRoutes.js";
 import notificationRoutes from "./notificationRoutes.js";
 import ticketRoutes from "./ticketRoutes.js";
 import whatsappRoutes from "./whatsappRoutes.js";
+import documentRoutes from "./documentRoutes.js";
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use("/notifications", notificationRoutes);
 router.use("/helpdesk",      ticketRoutes);
 router.use("/tickets",       ticketRoutes);
 router.use("/whatsapp",      whatsappRoutes);
+router.use("/documents",     documentRoutes);
 
 export default router;

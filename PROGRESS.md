@@ -125,6 +125,22 @@
     - Instant celebratory auto-settlement animation with verified UTR badge and ledger confirmation.
     - Manual 12-digit UTR fallback form for residents who prefer manual submission.
   - **Automated Vitest Suite (`upiGateway.test.js`)**: 42 / 42 Vitest tests passing across 12 test suites; clean production Vite build in 17.5s.
-- [ ] **Killer Feature 5: Official PDF Notice Board & Society Documents Vault**
+- [x] **Killer Feature 5: Official PDF Notice Board & Society Documents Vault**:
+  - **Statutory Compliance Health Scorecard**: Real-time compliance health tracking across 4 pillars required by Indian housing society bye-laws:
+    - Annual Fire Safety NOC (`PMC/FIRE/NOC/2026/0442`) with expiration countdown tracking ("Valid for 226 days").
+    - Passenger Lift Safety & ARD License (`CEI/MH/LIFT/8821`) under Chief Electrical Inspector Maharashtra.
+    - Model Society Bye-Laws repository (174 statutory clauses under Maharashtra Co-operative Societies Act).
+    - Statutory Financial Audit Report & CA Certified Balance Sheet (FY 2024-25).
+  - **Database Architecture (`society_documents` & `official_notices`)**: Relational tables with document number, issuing authority, expiry dates, access scope (`ALL_RESIDENTS` vs `COMMITTEE_ONLY` confidential), priority, pinned flags, and file metadata.
+  - **Backend Service & RBAC (`documentModel.js`, `documentService.js`, `documentController.js`)**: Mounted `/api/documents` with compliance health calculations, file upload via multer, audit logging (`SOCIETY_DOCUMENT_UPLOADED`, `OFFICIAL_NOTICE_PUBLISHED`), and privacy filters (residents cannot view committee confidential contracts).
+  - **PDF Letterhead Generator (`noticePdfGenerator.js`)**: Dynamic client-side generator creating official A4 society letterheads with Obsidian & Terracotta styling, registration header, notice reference number, issue date, priority banners, body text, and Honorary Secretary & Chairman signature blocks.
+  - **Interactive Frontend Vault & Notice Board (`DocumentsVaultPage.jsx`)**:
+    - Dual-tab interface switching between Statutory Documents Vault and Digital Notice Board.
+    - Pinned notices highlighted at the top with amber/emerald priority glow.
+    - 1-Click "Download Official PDF Circular" and "Download Document" buttons.
+    - Document upload modal with expiry alert datepickers and confidential scope selectors.
+    - Notice composer modal with category, priority, and pin toggles.
+    - Sidebar navigation link in `AppShell.jsx` mounted at `/documents`.
+  - **Automated Vitest Suite (`documentVault.test.js`)**: 57 / 57 Vitest tests passing across all 14 test suites; clean production Vite build in 18.2s.
 
 > **Rule:** After completing each numbered phase, update this file by checking the completed items so the next model resumes from the next unchecked step.

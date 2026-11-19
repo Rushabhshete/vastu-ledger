@@ -9,6 +9,7 @@ import {
   Vote,
   Wrench,
   MessageSquare,
+  FolderLock,
   ShieldCheck,
   LogOut,
   Sun,
@@ -80,6 +81,12 @@ export function AppShell({ children }) {
       label: "Helpdesk & Maintenance",
       path: "/helpdesk",
       icon: Wrench,
+      roles: ["ADMIN", "TREASURER", "COMMITTEE", "RESIDENT"],
+    },
+    {
+      label: "Documents & Notices",
+      path: "/documents",
+      icon: FolderLock,
       roles: ["ADMIN", "TREASURER", "COMMITTEE", "RESIDENT"],
     },
     {
