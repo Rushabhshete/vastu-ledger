@@ -222,7 +222,7 @@ export async function getAgmFinancialPack(societyId = 1) {
       contactPhone: society.contact_phone,
       gstin: settings.SOCIETY_GSTIN || "27AABCV1234F1ZK",
       bankMask: settings.SOCIETY_BANK_MASK || "ICICI Bank ****4521",
-      upiVpa: settings.SOCIETY_UPI_VPA || "9923812557@upi",
+      upiVpa: settings.SOCIETY_UPI_VPA || "9525621552@upi",
     },
     meta: {
       financialYear: fyString,

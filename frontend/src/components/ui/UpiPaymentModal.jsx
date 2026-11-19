@@ -114,7 +114,7 @@ export function UpiPaymentModal({ isOpen, onClose, bill, onSuccess }) {
   if (!isOpen || !bill) return null;
 
   const totalAmount = Number(bill.total_amount || 0);
-  const effectiveVpa = session?.vpa || contextVpa || "9923812557@upi";
+  const effectiveVpa = session?.vpa || contextVpa || "9525621552@upi";
   const effectiveName = session?.payeeName || contextSocietyName || "VastuLedger Society";
 
   // Use session intent URI if available; otherwise compute static URI

@@ -242,7 +242,7 @@ export function AdminControlPanelPage() {
       ifscCode: form.SOCIETY_BANK_IFSC || "HDFC0001234",
       accountNumber: "",
       confirmAccountNumber: "",
-      upiVpa: form.SOCIETY_UPI_VPA || "9923812557@upi",
+      upiVpa: form.SOCIETY_UPI_VPA || "9525621552@upi",
       adminPassword: "",
       reason: "",
     });

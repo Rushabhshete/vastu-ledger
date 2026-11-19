@@ -2,7 +2,7 @@
  * Generate standard NPCI UPI Intent URI for payment.
  *
  * @param {Object} params
- * @param {string} params.vpa - Society UPI ID (e.g. '9923812557@upi')
+ * @param {string} params.vpa - Society UPI ID (e.g. '9525621552@upi')
  * @param {string} params.payeeName - Payee name (e.g. 'Vastu Heights CHS')
  * @param {number|string} params.amount - Amount in INR (e.g. 7590.00)
  * @param {string} [params.billId] - Bill reference number
@@ -10,7 +10,7 @@
  * @returns {string} Standard UPI URI string
  */
 export function buildUpiUri({ vpa, payeeName, amount, billId, flatNumber, referenceId = null }) {
-  const cleanVpa = encodeURIComponent(vpa || "9923812557@upi");
+  const cleanVpa = encodeURIComponent(vpa || "9525621552@upi");
   const cleanName = encodeURIComponent(payeeName || "Vastu Ledger CHS");
   const numAmount = Number(amount || 0).toFixed(2);
   const note = encodeURIComponent(`Maint ${flatNumber ? `Flat ${flatNumber}` : ""} Bill #${billId || ""}`.trim());
