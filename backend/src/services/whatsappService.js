@@ -196,10 +196,11 @@ export async function sendBillNotification(billId, societyId = 1) {
 
   const [socRows] = await pool.execute("SELECT name FROM societies WHERE id = ?", [societyId]);
   const societyName = socRows[0]?.name || "VastuLedger Society";
+  const societyVpa = (await configModel.get("SOCIETY_UPI_VPA", societyId)) || (await configModel.get("UPI_VPA", societyId)) || "9923812557@upi";
 
   const totalAmount = Number(bill.total_amount);
   const upiUri = generateUpiIntentUri({
-    vpa: "vastu.ledger@upi",
+    vpa: societyVpa,
     payeeName: societyName,
     amount: totalAmount,
     referenceId: `VL-BILL-${bill.id}`,
@@ -275,8 +276,9 @@ export async function sendBatchDueReminders(societyId = 1) {
       if (!resident || !resident.phone) continue;
 
       const totalAmount = Number(bill.total_amount);
+      const reminderVpa = (await configModel.get("SOCIETY_UPI_VPA", societyId)) || (await configModel.get("UPI_VPA", societyId)) || "9923812557@upi";
       const upiUri = generateUpiIntentUri({
-        vpa: "vastu.ledger@upi",
+        vpa: reminderVpa,
         payeeName: societyName,
         amount: totalAmount,
         referenceId: `VL-REM-${bill.id}`,

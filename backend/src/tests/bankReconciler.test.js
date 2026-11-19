@@ -29,6 +29,10 @@ describe("Killer Feature 1: Bank Statement Excel / CSV Auto-Reconciler", () => {
       { expiresIn: "15m" }
     );
 
+    // Clean up any stale test bills from prior runs
+    await pool.execute("DELETE FROM upi_reconciliations WHERE utr IN (?, ?)", [testUtr1, testUtr2]);
+    await pool.execute("DELETE FROM maintenance_bills WHERE billing_cycle = '2026-06-01' AND flat_id IN (1, 2)");
+
     // Setup clean test bills for Flat 1 and Flat 2 in Society 1
     // Bill 1: PENDING ₹7590 for Flat 1 with a SUBMITTED UTR (Direct Match)
     const [bill1Res] = await pool.execute(

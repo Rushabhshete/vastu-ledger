@@ -20,6 +20,10 @@ describe("Killer Feature 4: Direct Sovereign Zero-Fee UPI Payment Gateway & Webh
       { expiresIn: "15m" }
     );
 
+    // Clean up any stale test bills from prior runs
+    await pool.execute("DELETE FROM upi_payment_sessions WHERE reference_id LIKE 'VL-S1-%'");
+    await pool.execute("DELETE FROM maintenance_bills WHERE billing_cycle = '2026-07-01' AND flat_id = 1");
+
     // Setup an unpaid test bill for Flat 1 in Society 1
     const [billRes] = await pool.execute(
       `INSERT INTO maintenance_bills 

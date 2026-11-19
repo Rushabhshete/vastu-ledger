@@ -45,7 +45,10 @@ export async function createPaymentSession({ billId, societyId = 1, user = null 
 
   // Check if an active unexpired session already exists
   const existing = await upiSessionModel.findLatestActiveSession(billId, societyId);
-  const vpaVal = (await configModel.get("UPI_VPA", societyId)) || "vastuheights@icici";
+  const vpaVal =
+    (await configModel.get("SOCIETY_UPI_VPA", societyId)) ||
+    (await configModel.get("UPI_VPA", societyId)) ||
+    "9923812557@upi";
   const society = (await societyModel.findById(societyId)) || { name: "Vastu Heights CHS" };
 
   if (existing) {
