@@ -11,14 +11,18 @@ import security from "../config/security.js";
  * Generates an NPCI-compliant UPI Intent URI.
  */
 export function generateUpiIntentUri({ vpa, payeeName, amount, referenceId, description }) {
-  const cleanVpa = encodeURIComponent(vpa.trim());
+  // In NPCI UPI spec, 'pa' MUST NOT encode '@' to '%40' — mobile apps like Google Pay & PhonePe treat '%40' literally as an invalid handle
+  const cleanVpa = vpa.trim();
   const cleanName = encodeURIComponent(payeeName.trim());
   const cleanAmt = Number(amount).toFixed(2);
-  const cleanRef = encodeURIComponent(referenceId.trim());
-  const cleanNote = encodeURIComponent(description.trim());
+  const cleanRef = referenceId ? encodeURIComponent(referenceId.trim()) : "";
+  const cleanNote = description ? encodeURIComponent(description.replace(/#/g, "").trim()) : "";
 
   // Standard NPCI spec: pa=VPA, pn=Name, am=Amount, cu=INR, tr=RefId, tn=Note
-  return `upi://pay?pa=${cleanVpa}&pn=${cleanName}&am=${cleanAmt}&cu=INR&tr=${cleanRef}&tn=${cleanNote}`;
+  let uri = `upi://pay?pa=${cleanVpa}&pn=${cleanName}&am=${cleanAmt}&cu=INR`;
+  if (cleanRef) uri += `&tr=${cleanRef}`;
+  if (cleanNote) uri += `&tn=${cleanNote}`;
+  return uri;
 }
 
 /**
@@ -57,7 +61,7 @@ export async function createPaymentSession({ billId, societyId = 1, user = null 
       payeeName: society.name,
       amount: existing.amount,
       referenceId: existing.reference_id,
-      description: `Maint Flat ${bill.wing || ""}-${bill.flat_number || bill.flat_id} Bill #${bill.id}`,
+      description: `Maint Flat ${bill.wing || ""}-${bill.flat_number || bill.flat_id} Bill ${bill.id}`,
     });
 
     return {
@@ -98,7 +102,7 @@ export async function createPaymentSession({ billId, societyId = 1, user = null 
     payeeName: society.name,
     amount,
     referenceId,
-    description: `Maint Flat ${bill.wing || ""}-${bill.flat_number || bill.flat_id} Bill #${bill.id}`,
+    description: `Maint Flat ${bill.wing || ""}-${bill.flat_number || bill.flat_id} Bill ${bill.id}`,
   });
 
   const session = await upiSessionModel.findSessionByRef(referenceId, societyId);

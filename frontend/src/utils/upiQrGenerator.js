@@ -10,10 +10,11 @@
  * @returns {string} Standard UPI URI string
  */
 export function buildUpiUri({ vpa, payeeName, amount, billId, flatNumber, referenceId = null }) {
-  const cleanVpa = encodeURIComponent(vpa || "9525621552@upi");
+  // In NPCI UPI spec, 'pa' MUST NOT encode '@' as '%40'
+  const cleanVpa = (vpa || "9525621552@upi").trim();
   const cleanName = encodeURIComponent(payeeName || "Vastu Ledger CHS");
   const numAmount = Number(amount || 0).toFixed(2);
-  const note = encodeURIComponent(`Maint ${flatNumber ? `Flat ${flatNumber}` : ""} Bill #${billId || ""}`.trim());
+  const note = encodeURIComponent(`Maint ${flatNumber ? `Flat ${flatNumber}` : ""} Bill ${billId || ""}`.trim());
 
   let uri = `upi://pay?pa=${cleanVpa}&pn=${cleanName}&am=${numAmount}&cu=INR&tn=${note}`;
   if (referenceId) {
