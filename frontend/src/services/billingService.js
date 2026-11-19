@@ -38,3 +38,17 @@ export async function verifyUtr(reconciliationId) {
   const { data } = await apiClient.post(`/billing/upi/verify/${reconciliationId}`);
   return data.data;
 }
+
+export async function previewBankStatement(file) {
+  const formData = new FormData();
+  formData.append("statement", file);
+  const { data } = await apiClient.post("/billing/reconcile/bank-statement/preview", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data.data;
+}
+
+export async function batchReconcileBankStatement(items) {
+  const { data } = await apiClient.post("/billing/reconcile/bank-statement/commit", { items });
+  return data.data;
+}

@@ -124,3 +124,32 @@ export async function listPendingReconciliations(societyId = null) {
   const [rows] = await pool.execute(sql, params);
   return rows;
 }
+
+export async function findPendingBillsWithDetails(societyId) {
+  const sql = `
+    SELECT mb.id, mb.society_id, mb.flat_id, mb.billing_cycle, mb.total_amount, mb.status,
+           f.wing, f.number AS flat_number, f.bhk,
+           u.id AS user_id, u.full_name, u.email
+    FROM maintenance_bills mb
+    JOIN flats f ON mb.flat_id = f.id
+    LEFT JOIN users u ON u.flat_id = f.id
+    WHERE mb.society_id = ? AND mb.status IN ('PENDING', 'OVERDUE')
+    ORDER BY mb.billing_cycle DESC, f.wing, f.number
+  `;
+  const [rows] = await pool.execute(sql, [societyId]);
+  return rows;
+}
+
+export async function findReconciliationsBySociety(societyId) {
+  const sql = `
+    SELECT ur.*, mb.total_amount AS bill_total, f.wing, f.number AS flat_number, u.full_name
+    FROM upi_reconciliations ur
+    JOIN maintenance_bills mb ON ur.bill_id = mb.id
+    JOIN flats f ON mb.flat_id = f.id
+    LEFT JOIN users u ON ur.submitted_by = u.id
+    WHERE ur.society_id = ?
+    ORDER BY ur.created_at DESC
+  `;
+  const [rows] = await pool.execute(sql, [societyId]);
+  return rows;
+}

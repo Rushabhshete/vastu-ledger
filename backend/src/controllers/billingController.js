@@ -14,6 +14,19 @@ export const submitUtrSchema = z.object({
   amount: z.number().positive(),
 });
 
+export const batchReconcileSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        billId: z.number().int().positive().nullable().optional(),
+        reconciliationId: z.number().int().positive().nullable().optional(),
+        amount: z.number().positive(),
+        extractedUtr: z.string().nullable().optional(),
+      })
+    )
+    .min(1, "At least one item must be selected for reconciliation"),
+});
+
 export async function generateBills(req, res) {
   const societyId = req.societyId || 1;
   const bills = await billingService.generateMonthlyBills(societyId, req.body.billingCycle);
@@ -64,4 +77,27 @@ export async function verifyUtr(req, res) {
     req.user.id
   );
   return success(res, result, "Payment verified and ledger updated");
+}
+
+export async function previewBankStatement(req, res) {
+  if (!req.file || !req.file.buffer) {
+    return fail(res, "Bank statement file (.csv, .xlsx, .xls) is required", 400);
+  }
+  const societyId = req.societyId || 1;
+  const preview = await reconciliationService.previewBankStatement({
+    fileBuffer: req.file.buffer,
+    originalFilename: req.file.originalname,
+    societyId,
+  });
+  return success(res, preview, "Bank statement parsed and matched successfully");
+}
+
+export async function batchReconcileBankStatement(req, res) {
+  const societyId = req.societyId || 1;
+  const result = await reconciliationService.batchReconcileBankStatement({
+    items: req.body.items,
+    societyId,
+    verifiedBy: req.user.id,
+  });
+  return success(res, result, `Successfully auto-reconciled ${result.reconciledCount} payments`);
 }

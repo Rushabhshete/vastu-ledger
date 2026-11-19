@@ -48,3 +48,31 @@ export const uploadReceipt = multer({
   },
   fileFilter,
 });
+
+const bankStatementFilter = (_req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const allowedExtensions = [".csv", ".xlsx", ".xls"];
+  const allowedMimes = [
+    "text/csv",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain",
+    "application/octet-stream",
+  ];
+
+  if (allowedExtensions.includes(ext) || allowedMimes.includes(file.mimetype.toLowerCase())) {
+    cb(null, true);
+  } else {
+    const err = new Error("Invalid statement format. Please upload a CSV (.csv) or Excel (.xlsx, .xls) bank statement.");
+    err.status = 400;
+    cb(err, false);
+  }
+};
+
+export const uploadBankStatement = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024, // 15 MB limit
+  },
+  fileFilter: bankStatementFilter,
+});

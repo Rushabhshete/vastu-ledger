@@ -79,4 +79,20 @@
   - **Dynamic Digital Twin**: Upgraded `SocietyTower3D.jsx` and `FallbackWingMap.jsx` to dynamically position and display live units and wings from the database.
   - **Zero Compilation Errors**: Verified Vite build completes in ~18s with exit code 0. Full automated database workflow tested and verified.
 
+## Phase 6: Killer Sales Features
+
+- [x] **Killer Feature 1: Bank Statement Excel / CSV Auto-Reconciler**:
+  - **Parser Engine (`bankStatementParser.js`)**: Parses Excel (`.xlsx`, `.xls`) and CSV statements from SBI, HDFC, ICICI, Kotak, Axis, and generic CSVs in-memory. Extracts 12-digit UPI UTRs/RRNs (`/(?:UPI|UTR|IMPS|NEFT)[\/:\-_]?\s*([0-9]{12})/i`), dates, and credit inflows.
+  - **Multi-Tier Matching Engine (`reconciliationService.js`)**:
+    - **Tier 1 (Direct UTR Match - 100% confidence)**: Cross-references extracted UTR with resident-submitted UTRs in `upi_reconciliations`.
+    - **Tier 2 (Smart Match - 90% confidence)**: Detects flat numbers (`A-101`, `101`) or resident names in narration and matches against unpaid pending bills with identical amounts (resolves payments even if the resident forgot to submit their UTR on the portal).
+    - **Tier 3 (Amount Mismatches & Unmatched Credits)**: Flags partial payments and non-maintenance bank interest/transfers.
+  - **Preview & Batch Commit Endpoints**: Mounted `POST /api/billing/reconcile/bank-statement/preview` and `POST /api/billing/reconcile/bank-statement/commit` with audit logging (`BANK_STATEMENT_BATCH_RECONCILED`), RBAC restriction to `ADMIN` and `TREASURER`, and atomic ledger hash chaining.
+  - **Interactive Frontend Reconciler Modal (`BankReconcilerModal.jsx`)**: Built drag-and-drop statement dropzone, match telemetry cards, batch selection checkboxes, and 1-click **"Approve & Reconcile to Ledger"** action.
+  - **Automated Vitest Suite (`bankReconciler.test.js`)**: All 33 Vitest tests passing across 10 test suites; clean production Vite build (`dist/` built in 30s).
+- [ ] **Killer Feature 2: WhatsApp Notification Bot (Cloud API Integration)**
+- [ ] **Killer Feature 3: Resident Helpdesk & Maintenance Ticketing**
+- [ ] **Killer Feature 4: Direct Payment Gateway / Virtual Accounts (Smart Collect Webhook)**
+- [ ] **Killer Feature 5: Official PDF Notice Board & Society Documents Vault**
+
 > **Rule:** After completing each numbered phase, update this file by checking the completed items so the next model resumes from the next unchecked step.

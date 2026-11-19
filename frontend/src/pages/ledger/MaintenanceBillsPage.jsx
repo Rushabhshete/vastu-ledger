@@ -9,10 +9,13 @@ import {
   AlertCircle,
   Search,
   Filter,
+  FileSpreadsheet,
+  Sparkles,
 } from "lucide-react";
 import GlassCard from "../../components/ui/GlassCard.jsx";
 import StatusBadge from "../../components/ui/StatusBadge.jsx";
 import UpiPaymentModal from "../../components/ui/UpiPaymentModal.jsx";
+import BankReconcilerModal from "../../components/billing/BankReconcilerModal.jsx";
 import { formatINR, formatDate } from "../../utils/formatCurrency.js";
 import { generateMaintenanceReceiptPDF } from "../../utils/pdfExporter.js";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -34,6 +37,7 @@ export function MaintenanceBillsPage() {
   const [selectedBillForPay, setSelectedBillForPay] = useState(null);
   const [payModalOpen, setPayModalOpen] = useState(false);
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+  const [bankReconcilerOpen, setBankReconcilerOpen] = useState(false);
   const [billingCycleInput, setBillingCycleInput] = useState("2026-04-01");
   const [generating, setGenerating] = useState(false);
   const [actionMessage, setActionMessage] = useState("");
@@ -121,13 +125,22 @@ export function MaintenanceBillsPage() {
         </div>
 
         {hasRole("ADMIN", "TREASURER") && (
-          <button
-            onClick={() => setGenerateModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B0F17] font-semibold text-xs flex items-center gap-2 transition shadow-lg shadow-[#F59E0B]/20"
-          >
-            <Plus className="w-4 h-4" />
-            Generate Monthly Bills
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setBankReconcilerOpen(true)}
+              className="px-4 py-2.5 rounded-xl bg-[#14B8A6] hover:bg-[#0D9488] text-white font-semibold text-xs flex items-center gap-2 transition shadow-lg shadow-[#14B8A6]/20 cursor-pointer"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              Auto-Reconcile Statement
+            </button>
+            <button
+              onClick={() => setGenerateModalOpen(true)}
+              className="px-4 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-[#0B0F17] font-semibold text-xs flex items-center gap-2 transition shadow-lg shadow-[#F59E0B]/20 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              Generate Monthly Bills
+            </button>
+          </div>
         )}
       </div>
 
@@ -230,9 +243,25 @@ export function MaintenanceBillsPage() {
       {activeTab === "reconcile" ? (
         /* Reconciliation Queue */
         <GlassCard className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Pending UPI UTR Verifications</h3>
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium">{pendingUpi.length} Waiting</span>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Pending UPI UTR Verifications</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Manually verify single submissions or batch-verify 50+ transactions by uploading your bank statement.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setBankReconcilerOpen(true)}
+                className="px-3 py-1.5 rounded-lg bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/30 hover:bg-[#14B8A6]/20 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Upload Bank Statement (.xlsx/.csv)
+              </button>
+              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium px-2 py-1 rounded bg-black/5 dark:bg-white/5">
+                {pendingUpi.length} Waiting
+              </span>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -464,6 +493,16 @@ export function MaintenanceBillsPage() {
           </div>
         </div>
       )}
+
+      {/* Bank Statement Auto-Reconciler Modal */}
+      <BankReconcilerModal
+        isOpen={bankReconcilerOpen}
+        onClose={() => setBankReconcilerOpen(false)}
+        onSuccess={() => {
+          setActionMessage("Bank statement batch reconciliation completed ✓");
+          loadData();
+        }}
+      />
 
       {/* UPI Payment Modal */}
       {selectedBillForPay && (

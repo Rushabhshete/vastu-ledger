@@ -4,6 +4,7 @@ import requireTenant from "../middlewares/tenantMiddleware.js";
 import authorizeRoles from "../middlewares/rbacMiddleware.js";
 import validateRequest from "../middlewares/validateRequest.js";
 import auditLog from "../middlewares/auditLogger.js";
+import { uploadBankStatement } from "../middlewares/uploadMiddleware.js";
 import * as ctrl from "../controllers/billingController.js";
 
 const router = Router();
@@ -29,6 +30,22 @@ router.post("/upi/verify/:id",
   authorizeRoles("ADMIN", "TREASURER"),
   auditLog("UPI_VERIFIED"),
   ctrl.verifyUtr
+);
+
+// Bank Statement Auto-Reconciler Endpoints
+router.post(
+  "/reconcile/bank-statement/preview",
+  authorizeRoles("ADMIN", "TREASURER"),
+  uploadBankStatement.single("statement"),
+  ctrl.previewBankStatement
+);
+
+router.post(
+  "/reconcile/bank-statement/commit",
+  authorizeRoles("ADMIN", "TREASURER"),
+  validateRequest(ctrl.batchReconcileSchema),
+  auditLog("BANK_STATEMENT_BATCH_RECONCILED"),
+  ctrl.batchReconcileBankStatement
 );
 
 export default router;
