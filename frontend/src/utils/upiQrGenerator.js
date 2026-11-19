@@ -12,7 +12,7 @@
 export function buildUpiUri({ vpa, payeeName, amount, billId, flatNumber, referenceId = null }) {
   // In NPCI UPI spec, 'pa' MUST NOT encode '@' as '%40'
   const cleanVpa = (vpa || "9525621552@upi").trim();
-  const cleanName = encodeURIComponent(payeeName || "Vastu Ledger CHS");
+  const cleanName = encodeURIComponent(payeeName || "Vastu Heights CHS");
   const numAmount = Number(amount || 0).toFixed(2);
   const note = encodeURIComponent(`Maint ${flatNumber ? `Flat ${flatNumber}` : ""} Bill ${billId || ""}`.trim());
 

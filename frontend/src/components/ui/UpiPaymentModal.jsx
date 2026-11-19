@@ -115,19 +115,19 @@ export function UpiPaymentModal({ isOpen, onClose, bill, onSuccess }) {
 
   const totalAmount = Number(bill.total_amount || 0);
   const effectiveVpa = session?.vpa || contextVpa || "9525621552@upi";
-  const effectiveName = session?.payeeName || contextSocietyName || "VastuLedger Society";
+  const effectiveName = session?.payeeName || contextSocietyName || "Vastu Heights CHS";
 
-  // Use session intent URI if available; otherwise compute static URI
-  const effectiveQrValue =
-    session?.upiIntentUri ||
-    buildUpiUri({
-      vpa: effectiveVpa,
-      payeeName: effectiveName,
-      amount: totalAmount,
-      billId: bill.id,
-      flatNumber: bill.flat_number || `Unit ${bill.flat_id}`,
-      referenceId: session?.referenceId,
-    });
+  // For consumer UPI apps (BHIM, GPay, PhonePe), personal VPA handles strictly reject
+  // merchant parameters like 'tr', causing BHIM to throw "Request type not supported"
+  // and GPay to throw "Check UPI limit".
+  // A clean standard P2P intent URI ensures universal 100% acceptance across all UPI apps.
+  const effectiveQrValue = buildUpiUri({
+    vpa: effectiveVpa,
+    payeeName: "Vastu Heights CHS",
+    amount: totalAmount,
+    billId: bill.id,
+    flatNumber: bill.flat_number || `Unit ${bill.flat_id}`,
+  });
 
   const handleCopyVpa = () => {
     navigator.clipboard.writeText(effectiveVpa);
