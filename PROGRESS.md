@@ -90,7 +90,23 @@
   - **Preview & Batch Commit Endpoints**: Mounted `POST /api/billing/reconcile/bank-statement/preview` and `POST /api/billing/reconcile/bank-statement/commit` with audit logging (`BANK_STATEMENT_BATCH_RECONCILED`), RBAC restriction to `ADMIN` and `TREASURER`, and atomic ledger hash chaining.
   - **Interactive Frontend Reconciler Modal (`BankReconcilerModal.jsx`)**: Built drag-and-drop statement dropzone, match telemetry cards, batch selection checkboxes, and 1-click **"Approve & Reconcile to Ledger"** action.
   - **Automated Vitest Suite (`bankReconciler.test.js`)**: All 33 Vitest tests passing across 10 test suites; clean production Vite build (`dist/` built in 30s).
-- [ ] **Killer Feature 2: WhatsApp Notification Bot (Cloud API Integration)**
+- [x] **Killer Feature 2: WhatsApp Notification Bot & Cloud Messaging Hub (Meta Cloud API Integration)**:
+  - **Direct Resident Engagement ("Residents don't open websites; they read WhatsApp")**: Automated messaging bot delivering bills, 1-tap UPI payment intents, due date reminders, and emergency broadcasts directly to flat owners.
+  - **Database Architecture (`whatsapp_logs`)**: Full delivery audit trail tracking recipient phone, name, flat, bill reference, message body, external Meta ID, and delivery status (`SENT`, `DELIVERED`, `READ`, `FAILED`).
+  - **Dual Operational Modes**: Connects live to official Meta WhatsApp Business Cloud API (`v21.0`), and automatically falls back to Sovereign Instant Dispatch simulation when credentials are not configured.
+  - **Automated Messaging Workflows (`whatsappService.js`)**:
+    - **Monthly Bill Dispatch**: Formats official bill with breakdown, due date, and embedded deep-link UPI intent URI (`upi://pay?pa=...&am=...&tr=...`).
+    - **Batch Due Reminders**: 1-click batch engine scanning pending bills and dispatching reminder alerts before the statutory 18% p.a. late-fee penalty date.
+    - **Payment Confirmation Receipts**: Automatically dings resident's phone with verified bank UTR and SHA-256 ledger crypt-hash receipt within 3 seconds of bank webhook settlement.
+    - **Emergency Society Broadcast**: Instant push announcements (e.g. water tank sanitization, lift maintenance, emergency AGM notices).
+    - **Interactive Webhook Handshake (`/api/whatsapp/webhook`)**: Handles Meta subscription challenge verification and real-time delivery status updates.
+  - **Interactive Frontend WhatsApp Hub (`WhatsAppBotPage.jsx`)**:
+    - Telemetry metrics (Total sent, Delivered %, Read %, active automated triggers).
+    - Live Interactive Smartphone Simulation pane rendering realistic WhatsApp chat bubbles, verified society shield badges, and 1-tap payment buttons.
+    - Activity stream with full-text search, type filtering, and message preview.
+    - Broadcast composer modal & Cloud API settings configuration.
+    - 1-Click WhatsApp dispatch button embedded directly in the `MaintenanceBillsPage.jsx` ledger table.
+  - **Automated Vitest Suite (`whatsappBot.test.js`)**: 50 / 50 Vitest tests passing across all 13 test suites; clean production Vite build (`dist/` built in 17.8s).
 - [x] **Killer Feature 3: Resident Helpdesk & Maintenance Ticketing**:
   - **Database Architecture (`helpdesk_tickets` & `helpdesk_ticket_comments`)**: Created relational schema for ticket tracking with category (`PLUMBING`, `ELECTRICAL`, `LIFT_ELEVATOR`, `SECURITY`, `CIVIL_LEAKAGE`, `HOUSEKEEPING`, `GENERAL`), priority (`LOW`, `MEDIUM`, `HIGH`, `EMERGENCY`), scope (`PRIVATE_FLAT`, `COMMON_AREA`), photo proof attachments, technician assignments, estimated costs, and 5-star ratings.
   - **Backend Service & RBAC (`ticketModel.js`, `ticketService.js`, `ticketController.js`)**: Mounted `/api/helpdesk` with automated in-app notifications to admins, emergency ticket prioritization, vendor assignment, resolution notes, and role-based privacy (residents cannot view other private flats' tickets).

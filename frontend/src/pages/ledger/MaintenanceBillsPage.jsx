@@ -11,6 +11,7 @@ import {
   Filter,
   FileSpreadsheet,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import GlassCard from "../../components/ui/GlassCard.jsx";
 import StatusBadge from "../../components/ui/StatusBadge.jsx";
@@ -21,6 +22,7 @@ import { generateMaintenanceReceiptPDF } from "../../utils/pdfExporter.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useSocietyConfig } from "../../context/SocietyConfigContext.jsx";
 import * as billingService from "../../services/billingService.js";
+import * as whatsappService from "../../services/whatsappService.js";
 
 export function MaintenanceBillsPage() {
   const { user, hasRole } = useAuth();
@@ -92,6 +94,15 @@ export function MaintenanceBillsPage() {
       loadData();
     } catch (err) {
       alert(err.response?.data?.detail || err.message || "Verification failed");
+    }
+  };
+
+  const handleSendBillWhatsApp = async (bill) => {
+    try {
+      const res = await whatsappService.sendBillWhatsApp(bill.id);
+      setActionMessage(`WhatsApp bill alert dispatched to Flat ${bill.wing}-${bill.flat_number || bill.flat_id} (${res.data?.recipientPhone}) ✓`);
+    } catch (err) {
+      alert(err.response?.data?.error || err.message || "Failed to dispatch WhatsApp alert");
     }
   };
 
@@ -435,6 +446,15 @@ export function MaintenanceBillsPage() {
                         >
                           <Download className="w-4 h-4 text-[#14B8A6]" />
                         </button>
+                        {hasRole("ADMIN", "TREASURER", "COMMITTEE") && (
+                          <button
+                            onClick={() => handleSendBillWhatsApp(b)}
+                            className="p-1.5 text-slate-500 hover:text-[#25D366] dark:text-slate-400 dark:hover:text-[#25D366] rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition inline-flex cursor-pointer"
+                            title="Send Bill Invoice & 1-Click UPI Payment to Resident via WhatsApp"
+                          >
+                            <MessageSquare className="w-4 h-4 text-[#25D366]" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))

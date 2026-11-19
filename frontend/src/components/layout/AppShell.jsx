@@ -8,6 +8,7 @@ import {
   FileSpreadsheet,
   Vote,
   Wrench,
+  MessageSquare,
   ShieldCheck,
   LogOut,
   Sun,
@@ -80,6 +81,12 @@ export function AppShell({ children }) {
       path: "/helpdesk",
       icon: Wrench,
       roles: ["ADMIN", "TREASURER", "COMMITTEE", "RESIDENT"],
+    },
+    {
+      label: "WhatsApp Bot",
+      path: "/whatsapp",
+      icon: MessageSquare,
+      roles: ["ADMIN", "TREASURER", "COMMITTEE"],
     },
     {
       label: "Admin Control Panel",

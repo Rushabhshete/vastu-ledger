@@ -299,3 +299,30 @@ CREATE TABLE IF NOT EXISTS upi_payment_sessions (
   INDEX idx_session_ref (reference_id),
   INDEX idx_session_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS whatsapp_logs (
+  id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
+  society_id          BIGINT NOT NULL,
+  recipient_phone     VARCHAR(20) NOT NULL,
+  recipient_name      VARCHAR(255) NULL,
+  user_id             BIGINT NULL,
+  flat_id             BIGINT NULL,
+  bill_id             BIGINT NULL,
+  template_name       VARCHAR(100) NOT NULL,
+  message_type        ENUM('BILL_DISPATCH', 'PAYMENT_REMINDER', 'RECEIPT_CONFIRMATION', 'HELPDESK_UPDATE', 'EMERGENCY_BROADCAST', 'GENERAL') NOT NULL DEFAULT 'GENERAL',
+  message_body        TEXT NOT NULL,
+  status              ENUM('QUEUED', 'SENT', 'DELIVERED', 'READ', 'FAILED') DEFAULT 'SENT',
+  external_message_id VARCHAR(255) NULL,
+  error_message       TEXT NULL,
+  metadata            JSON NULL,
+  created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (flat_id) REFERENCES flats(id) ON DELETE SET NULL,
+  FOREIGN KEY (bill_id) REFERENCES maintenance_bills(id) ON DELETE SET NULL,
+  INDEX idx_wa_soc_type (society_id, message_type),
+  INDEX idx_wa_status (status),
+  INDEX idx_wa_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

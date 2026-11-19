@@ -225,6 +225,19 @@ export async function processGatewayWebhook({ payload, signature = null, rawBody
   });
 
   // 5. Notify resident directly
+  try {
+    const { sendReceiptNotification } = await import("./whatsappService.js");
+    await sendReceiptNotification({
+      billId: bill.id,
+      societyId,
+      utr: finalUtr,
+      amount: amount || Number(session.amount),
+      ledgerRef: tx.currentHash || String(tx.insertId),
+    });
+  } catch {
+    // Non-blocking WhatsApp dispatch
+  }
+
   if (bill.user_id) {
     try {
       await notifyPaymentVerified({
